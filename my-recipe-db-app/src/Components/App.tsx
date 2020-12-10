@@ -9,13 +9,38 @@ export class App extends React.Component<IAppProps, IAppState> {
     super(props);
     this.state = {
       showForm: false,
+      recipe: [],
+      seletedRecipe: null,
     };
   }
   onButtonClick = () => {
     this.setState({ showForm: true });
   };
+
+  handleCreateRecipe = (
+    name: string,
+    ingredients: string,
+    instructions: string,
+    id: Date
+  ) => {
+    const newRecipe = this.state.recipe.concat({
+      name,
+      ingredients,
+      instructions,
+      id: new Date().getTime(),
+    });
+    this.setState({
+      recipe: newRecipe,
+    });
+  };
+  handleSelected = (recipe: object) =>
+    this.setState({
+      seletedRecipe: recipe,
+      showForm: false,
+    });
+
   render() {
-    let { showForm } = this.state;
+    let { showForm, seletedRecipe } = this.state;
     return (
       <div className="container">
         <header>
@@ -31,10 +56,17 @@ export class App extends React.Component<IAppProps, IAppState> {
         <section>
           <div className="row">
             <div className="col-sm-4">
-              <RecipeList />
+              <RecipeList
+                recipes={this.state.recipe}
+                onSelected={this.handleSelected}
+              />
             </div>
             <div className="col-sm-8">
-              {showForm ? <RecipeForm /> : <RecipeDetail />}
+              {showForm ? (
+                <RecipeForm onSubmit={this.handleCreateRecipe} />
+              ) : (
+                <RecipeDetail recipe={seletedRecipe} />
+              )}
             </div>
           </div>
         </section>
@@ -45,4 +77,8 @@ export class App extends React.Component<IAppProps, IAppState> {
 interface IAppProps {}
 interface IAppState {
   showForm: boolean;
+  recipe: {}[];
+  seletedRecipe: any;
 }
+
+// notes for self from this project
